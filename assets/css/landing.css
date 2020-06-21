@@ -1,0 +1,27 @@
+body{
+    flex-direction: column;
+}
+
+h1{
+    font-size: 50px;
+}
+
+button{
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 20px 50px;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: bold;
+    font-family: inherit;
+    outline: white;
+}
+
+button:hover{
+    background-color: white;
+    color: teal;
+}
