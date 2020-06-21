@@ -1,4 +1,5 @@
 import DrawChessboard from '../drawing/index.js';
+import validityChecks from './validityChecks.js';
 
 export default class GameLogic{
     constructor(gameState){
@@ -14,42 +15,11 @@ export default class GameLogic{
         
         let piece = this.gameState[fromX][fromY];
         
-        if(piece === 'blank'){
+        if(!piece){
             return;
         }
-        
-        let direction = piece[0] === 'w' ? -1 : 1;
-        
-        const piece_val = piece.split('_')[1];
-        
-        switch (piece_val) {
-            case 'pawn':
-                this.checkPawnMoves(fromX, fromY, piece[0], direction);
-                break;
 
-            case 'rook':
-                this.checkRookMoves(fromX, fromY, piece[0], direction);
-                break;
-        
-            case 'bishop':
-                this.checkBishopMoves(fromX, fromY, piece[0], direction);
-                break;
-        
-            case 'queen':
-                this.checkQueenMoves(fromX, fromY, piece[0], direction);
-                break;
-            
-            case 'knight':
-                this.checkKnightMoves(fromX, fromY, piece[0], direction);
-                break;
-            
-            case 'king':
-                this.checkKingMoves(fromX, fromY, piece[0], direction);
-                break;
-        
-            default:
-                break;
-        }
+        this.getMoveSuggestions(fromX, fromY, piece);
     }
 
     checkBoundaryCondition(x, y){
@@ -62,22 +32,22 @@ export default class GameLogic{
 
     checkIfEmpty(x, y){
         
-        if(this.gameState[x][y] !== 'blank'){
+        if(!this.gameState[x][y]){
             return false;
         }
         return true;
     }
 
-    checkFriendly(x, y, color){
-        if(this.gameState[x][y][0] !== color[0]){
+    checkFriendly(x, y, isWhite){
+        if(this.gameState[x][y].isWhite !== isWhite){
             return false;
         }
         return true;
     }
 
-    checkEnemy(x, y, color){
+    checkEnemy(x, y, isWhite){
         
-        if(this.gameState[x][y] === 'blank' || this.checkFriendly(x, y, color)){
+        if(!this.gameState[x][y] || this.checkFriendly(x, y, isWhite)){
             return false;
         }
         return true;
@@ -88,20 +58,27 @@ export default class GameLogic{
         this.drawCtx.addHighlight(x, y);
     }
 
-    checkPawnMoves(x, y, color, dir){
+    getMoveSuggestions(x, y, piece){
 
-        if(this.checkBoundaryCondition(x + dir, y) && this.checkIfEmpty(x + dir, y)){
-            this.setAsProbableMove(x + dir, y);
-        }
-        if(this.checkBoundaryCondition(x + dir, y + dir) && this.checkEnemy(x + dir, y + dir, color)){
-            this.setAsProbableMove(x + dir, y + dir);
-        }
-        if(this.checkBoundaryCondition(x + dir, y - dir) && this.checkEnemy(x + dir, y - dir, color)){
-            this.setAsProbableMove(x + dir, y - dir);
-        }
+        piece.moveList.forEach(moveGroup => {
+            moveGroup.every(([[dx, dy], conditions]) => {
+                
+                if(!this.checkBoundaryCondition(x + dx, y + dy)){
+                    return false;
+                }
+    
+                if(conditions.every(con => validityChecks[con](x + dx, y + dy, piece, this.gameState))){
+                    this.setAsProbableMove(x + dx, y + dy);
+                    return true;
+
+                }else{
+                    return false;
+                }
+            });
+        });
     }
 
-    checkRookMoves(x, y, color, dir){
+    checkRookMoves(x, y, piece){
         
         for (let dy = 1; dy <= 7; dy++) {
             if(!this.checkBoundaryCondition(x, y + dy)){
@@ -163,7 +140,7 @@ export default class GameLogic{
         }
     }
 
-    checkBishopMoves(x, y, color, dir){
+    checkBishopMoves(x, y, piece){
         for (let diff = 1; diff <= 7; diff++) {
             if(!this.checkBoundaryCondition(x + diff, y + diff)){
                 break;
@@ -224,12 +201,12 @@ export default class GameLogic{
         }
     }
 
-    checkQueenMoves(x, y, color, dir){
-        this.checkRookMoves(x, y, color, dir);
-        this.checkBishopMoves(x, y, color, dir);
+    checkQueenMoves(x, y, piece){
+        this.checkRookMoves(x, y, piece.color, piece.direction);
+        this.checkBishopMoves(x, y, piece.color, piece.direction);
     }
 
-    checkKnightMoves(x, y, color, dir){
+    checkKnightMoves(x, y, piece){
         let movesArr = [
             [2, 1], [2, -1], [-2, 1], [-2, -1],
             [1, 2], [1, -2], [-1, 2], [-1, -2]
@@ -243,7 +220,7 @@ export default class GameLogic{
         })
     }
 
-    checkKingMoves(x, y, color, dir){
+    checkKingMoves(x, y, piece){
         const movesArr = [
             [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]
         ];
@@ -272,12 +249,12 @@ export default class GameLogic{
 
         let piece = this.gameState[fromX][fromY];
 
-        if(piece === 'blank'){
+        if(!piece){
             return false;
         }
 
-        let direction = piece[0] === 'w' ? 0 : 1;
-        if(direction !== this.turn){
+        let selectedPieceDir = piece.isWhite ? 0 : 1;
+        if(selectedPieceDir !== this.turn){
             return false;
         }
 
@@ -289,7 +266,8 @@ export default class GameLogic{
         let hasWon = false;
         
         if(isValidMove){
-            if(this.gameState[toX][toY].split('_')[1] === 'king'){
+            const toCell = this.gameState[toX][toY]
+            if(!!toCell && toCell.name === 'king'){
                 this.stopTimer();
                 hasWon = true;
             }else{
@@ -305,7 +283,8 @@ export default class GameLogic{
 
     updateGameState(fromX, fromY, toX, toY){
         const tmp = this.gameState[fromX][fromY];
-        this.gameState[fromX][fromY] = 'blank';
+        tmp.isFirstMove = false;
+        this.gameState[fromX][fromY] = null;
         this.gameState[toX][toY] = tmp;
     }
 

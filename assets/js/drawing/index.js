@@ -77,25 +77,15 @@ export default class DrawChessboard{
     }
 
     createCell(piece, rowNum, colNum){
-
-
-        let color = ''
-
-        if(piece !== 'blank'){
-            piece = piece.split('_');
-            color = piece[0] === 'w' ? 'white' : 'black';
-            piece = piece[1];
-        }
-
         
-        if(!validPieces.has(piece)){
-            throw "Invalid Piece";
+        if(!!piece){
+            if(!validPieces.has(piece.name)){
+                throw "Invalid Piece";
+            }
         }
-
-        const pieceDiv = Pieces[piece](color);
 
         const cell = document.createElement('div');
-        cell.appendChild(pieceDiv);
+        !!piece && cell.appendChild(piece.template);
         
         if((rowNum + colNum) % 2){
             cell.classList.add('board-cell', 'b');

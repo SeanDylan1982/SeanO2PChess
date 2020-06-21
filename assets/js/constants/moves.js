@@ -1,6 +1,0 @@
-export const VALIDITY_CONDITIONS = {
-    FIRST_MOVE,
-    ENEMY_PRESENT,
-    CASTLE_ALLOWED,
-    EMPTY
-}

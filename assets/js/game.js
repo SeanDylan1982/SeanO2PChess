@@ -1,13 +1,26 @@
 import DrawChessboard from './drawing/index.js';
 import initialGameState from './chess-logic/gameInit.js';
 import Move from './chess-logic/move.js';
+import Piece from './chess-pieces/index.js';
 
 (document.onload = () => {
     let chessBoardElem = document.getElementById('chess-board');
     let turn = document.getElementById('turn');
     let timer = document.getElementById('timer');
 
-    let gameState = [...initialGameState];
+    let gameState = initialGameState.map(
+        (row, rowNum) => row.map(
+            (cell, colNum) => {
+                if(cell === 'blank'){
+                    return null;
+                }else{
+                    const pc = cell.split('_')
+                    return Piece[pc[1]](pc[0], rowNum, colNum)
+                }
+            }
+        )
+    );
+    
     let move = new Move(gameState, chessBoardElem, turn, timer);
 
     const drawCtx = new DrawChessboard();

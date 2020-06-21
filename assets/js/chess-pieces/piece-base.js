@@ -1,15 +1,17 @@
-import chessPieces from "./chess-pieces";
+import {VALIDITY_CONDITIONS} from '../constants/movesValidity.js';
+import ChessPieces from '../drawing/chess-pieces.js';
 
-import ChessPieces from './chess-pieces';
-
-export class PieceBase{
+export default class PieceBase{
     constructor(isWhite, x, y, pieceName){
         this.isWhite = isWhite;
         this.direction = isWhite ? -1 : 1;
+        this.name = pieceName; 
         this.x = x;
         this.y = y;
+        this.isFirstMove = true;
         this.alive = true;
-        this.name = '';
+        this.validityConditions = VALIDITY_CONDITIONS;
+        this.moveList = [];
         this.template = ChessPieces[pieceName](isWhite ? 'white' : 'black');
     }
 }
