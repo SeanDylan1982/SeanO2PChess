@@ -11,10 +11,8 @@
 #chess-board{
     height: 90vh;
     width: 90vh;
-    border: 1px solid;
     display: flex;
     flex-wrap: wrap;
-    border: 1px solid #666;
     color: black;
     font-size: 50px;
 }
