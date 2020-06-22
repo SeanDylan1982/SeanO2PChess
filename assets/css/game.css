@@ -9,8 +9,8 @@
 }
 
 #chess-board{
-    height: 600px;
-    width: 600px;
+    height: 90vh;
+    width: 90vh;
     border: 1px solid;
     display: flex;
     flex-wrap: wrap;
@@ -20,8 +20,8 @@
 }
 
 #win-screen{
-    height: 600px;
-    width: 600px;
+    height: 90vh;
+    width: 90vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,28 +95,55 @@
     margin-top: 1rem;
 }
 
-@media only screen and (max-width: 1200px){
+@media only screen and (max-width: 1190px){
     #chess-board{
-        height: 500px;
-        width: 500px;
-        font-size: 45px;
-    }
-
-    #win-screen{
-        height: 500px;
-        width: 500px;
-    }
-}
-
-@media only screen and (max-width: 936px){
-    #chess-board{
-        height: 400px;
-        width: 400px;
+        height: 85vmin;
+        width: 85vmin;
         font-size: 40px;
     }
 
     #win-screen{
-        height: 400px;
-        width: 400px;
+        height: 85vmin;
+        width: 85vmin;
+    }
+}
+
+@media only screen and (max-width: 830px){
+    body{
+        flex-direction: column;
+    }
+    .left-panel{
+        order: 3;
+    }
+
+    .right-panel{
+        order: 2;
+    }
+
+    .chess-board-container{
+        margin-top: 10vmax;
+    }
+
+    #chess-board{
+        height: 80vmin;
+        width: 80vmin;
+        font-size: 35px;
+        order: 1;
+    }
+
+    #win-screen{
+        height: 80vmin;
+        width: 80vmin;
+        font-size: 40px;
+    }
+}
+
+@media only screen and (max-width: 450px){
+    #chess-board{
+        font-size: 25px;
+    }
+
+    #win-screen{
+        font-size: 25px;
     }
 }

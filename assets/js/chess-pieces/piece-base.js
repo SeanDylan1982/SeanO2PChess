@@ -15,3 +15,9 @@ export default class PieceBase{
         this.template = ChessPieces[pieceName](isWhite ? 'white' : 'black');
     }
 }
+
+// moveList is of the form Array of moveGroup, 
+// Each moveGroup is an array of moves, in which each move is dependent on previous move bein valid
+// moveGroup is of the form [[x, y], [Conditions]]
+// x, y are the x, y cordinates for which validity is bein checked
+// Conditions are all the necessary conditions for validity, All of conditions must be true in order for the cell to be valid
