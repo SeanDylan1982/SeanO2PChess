@@ -93,6 +93,22 @@
     margin-top: 1rem;
 }
 
+.lost-pieces-container {
+    margin-top: 1rem;
+    font-size: 40px;
+    color: white;
+}
+
+.lost-pieces-container > div{
+    margin-top: 1rem;
+}
+
+.lost-pieces-container > div > span{
+    display: inline-block;
+    opacity: 0.5;
+
+}
+
 @media only screen and (max-width: 1190px){
     #chess-board{
         height: 85vmin;

@@ -9,6 +9,11 @@ export default class GameLogic{
         this.turn = 0; // white -> 0, black -> 1
         this.timer = [0, 0];
         this.intervalRef = null;
+        this.winnerId = null;
+        this.lostPieces = [
+            [], // white
+            [], // black
+        ]
     }
 
     getValidMoves(fromX, fromY){  
@@ -263,26 +268,17 @@ export default class GameLogic{
 
     validateMoveEnd(toX, toY){        
         const isValidMove = this.probableMoves.some(([x, y]) => x === toX && y === toY);
-        let hasWon = false;
         
         if(isValidMove){
-            const toCell = this.gameState[toX][toY]
-            if(!!toCell && toCell.name === 'king'){
-                this.stopTimer();
-                hasWon = true;
-            }else{
-                this.turn = (this.turn + 1) % 2;
-            }
+            this.turn = (this.turn + 1) % 2;
         }
 
-        return {
-            isValidMove,
-            hasWon
-        };
+        return isValidMove;
     }
 
-    updateGameState(fromX, fromY, toX, toY){
+    updateGameState(fromX, fromY, toX, toY){    
         const tmp = this.gameState[fromX][fromY];
+
         tmp.isFirstMove = false;
         this.gameState[fromX][fromY] = null;
         this.gameState[toX][toY] = tmp;
@@ -309,5 +305,41 @@ export default class GameLogic{
             const sec = this.timer[this.turn] % 60;
             this.drawCtx.updateTimer(hr, min, sec, timerParent);
         }, 1000);
+    }
+
+    checkForWinner(toX, toY){
+        const toCell = this.gameState[toX][toY]
+
+        if(!!toCell && toCell.name === 'king'){
+            this.stopTimer();
+            this.winnerId = toCell.isWhite ? 1 : 0;
+            return true;
+        }
+
+        return false;
+
+    }
+
+    checkForLostPieces(toX, toY, lostWPiecesRef, lostBPiecesRef){
+        const toCell = this.gameState[toX][toY];
+
+        if(!!toCell){
+            let pieceIdx;
+            let color;
+            let parentRef;
+    
+            if(toCell.isWhite){
+                pieceIdx = 0;
+                color = 'white';
+                parentRef = lostWPiecesRef;
+            }else{
+                pieceIdx = 1;
+                color = 'black';
+                parentRef = lostBPiecesRef;
+            }
+            this.lostPieces[pieceIdx].push(toCell.name);
+            this.drawCtx.updateLostPieces(color, toCell.name, parentRef);
+
+        }
     }
 }

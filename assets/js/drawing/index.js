@@ -3,7 +3,7 @@
 
 // w_lKnight, b_rRook
 
-import Pieces from './chess-pieces.js';
+import chessPieceEntities from './chess-piece-template.js';
 
 const validPieces = new Set([
     'blank', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king'
@@ -138,5 +138,11 @@ export default class DrawChessboard{
         const winnerName = winnerId === 0 ? 'White' : 'Black';
         winDiv.innerText = `${winnerName} Wins!`;
         parent.appendChild(winDiv);
+    }
+
+    updateLostPieces(color, pieceName, parent){
+        const pieceTemplate = document.createElement('span');
+        pieceTemplate.innerHTML = chessPieceEntities[color][pieceName];
+        parent.appendChild(pieceTemplate);
     }
 }

@@ -7,6 +7,8 @@ import Piece from './chess-pieces/index.js';
     let chessBoardElem = document.getElementById('chess-board');
     let turn = document.getElementById('turn');
     let timer = document.getElementById('timer');
+    let lostWhitePieces = document.getElementById('white-pieces');
+    let lostBlackPieces = document.getElementById('black-pieces');
 
     let gameState = initialGameState.map(
         (row, rowNum) => row.map(
@@ -21,7 +23,7 @@ import Piece from './chess-pieces/index.js';
         )
     );
     
-    let move = new Move(gameState, chessBoardElem, turn, timer);
+    let move = new Move(gameState, chessBoardElem, turn, timer, lostWhitePieces, lostBlackPieces);
 
     const drawCtx = new DrawChessboard();
     drawCtx.drawBoard(gameState, chessBoardElem);
