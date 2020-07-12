@@ -1,5 +1,6 @@
 import DrawChessboard from '../drawing/index.js';
 import validityChecks from './validityChecks.js';
+import { VALIDITY_CONDITIONS } from '../constants/movesValidity.js';
 
 export default class GameLogic{
     constructor(gameState){
@@ -74,8 +75,7 @@ export default class GameLogic{
     
                 if(conditions.every(con => validityChecks[con](x + dx, y + dy, piece, this.gameState))){
                     this.setAsProbableMove(x + dx, y + dy);
-                    return true;
-
+                    return !validityChecks[VALIDITY_CONDITIONS.ENEMY_PRESENT](x + dx, y + dy, piece, this.gameState);
                 }else{
                     return false;
                 }
